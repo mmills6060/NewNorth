@@ -40,3 +40,6 @@ next-env.d.ts
 
 # vercel
 .vercel
+
+# legacy file cache (replaced by Postgres)
+data/greenhouse-cache.json
