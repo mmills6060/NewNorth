@@ -13,7 +13,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:setup": "docker compose up -d && sleep 8 && drizzle-kit migrate"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",

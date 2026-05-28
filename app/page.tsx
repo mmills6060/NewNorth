@@ -1,4 +1,6 @@
+import { CompaniesScrapeTable } from "@/components/companies-scrape-table"
 import { CrawlButton } from "@/components/crawl-button"
+import { DashboardTabs } from "@/components/dashboard-tabs"
 import { JobsTable } from "@/components/jobs-table"
 
 export default function Page() {
@@ -14,7 +16,11 @@ export default function Page() {
           </div>
           <CrawlButton />
         </header>
-        <JobsTable />
+
+        <DashboardTabs
+          jobsPanel={<JobsTable />}
+          companiesPanel={<CompaniesScrapeTable />}
+        />
       </div>
     </main>
   )

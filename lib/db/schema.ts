@@ -24,6 +24,16 @@ export const greenhouseJobs = mysqlTable(
   })
 )
 
+export const greenhouseCompanies = mysqlTable("greenhouse_companies", {
+  boardSlug: varchar("board_slug", { length: 255 }).primaryKey(),
+  companyName: varchar("company_name", { length: 255 }).notNull(),
+  source: varchar("source", { length: 20 }).notNull().default("manual"),
+  sourceInput: varchar("source_input", { length: 2048 }),
+  jobCount: int("job_count").notNull().default(0),
+  lastSeenAt: timestamp("last_seen_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+})
+
 export const greenhouseCrawlRuns = mysqlTable("greenhouse_crawl_runs", {
   id: int("id").primaryKey().autoincrement(),
   fetchedAt: timestamp("fetched_at").notNull(),

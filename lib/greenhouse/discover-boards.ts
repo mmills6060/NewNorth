@@ -90,6 +90,10 @@ export async function discoverBoards(
     if (discoveredSlugs.size >= config.maxBoards) break
 
     for (const link of extractLinksFromHtml(html, url)) {
+      for (const slug of extractBoardSlugsFromText(link)) {
+        discoveredSlugs.add(slug)
+      }
+
       if (visited.has(link) || queue.includes(link)) continue
       if (queue.length + visited.size >= config.maxPages * 2) continue
 

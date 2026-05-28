@@ -3,6 +3,8 @@ import type { CrawlConfig } from "@/lib/greenhouse/types"
 const DEFAULT_SEED_URLS = [
   "https://jobspipe.dev/sources/greenhouse",
   "https://www.ycombinator.com/jobs",
+  "https://www.builtinnyc.com/jobs",
+  "https://builtin.com/jobs",
 ]
 
 const KNOWN_CRAWL_HOST_SUFFIXES = [
@@ -11,6 +13,9 @@ const KNOWN_CRAWL_HOST_SUFFIXES = [
   "workatastartup.com",
   "github.com",
   "gist.github.com",
+  "builtinnyc.com",
+  "builtin.com",
+  "greenhouse.io",
 ]
 
 function parsePositiveInt(value: string | undefined, fallback: number): number {

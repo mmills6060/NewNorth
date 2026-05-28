@@ -55,3 +55,14 @@ export interface CrawlSummary {
   pagesCrawled: number
   slugsDiscovered: number
 }
+
+export interface BoardDiscoverySummary {
+  boards: number
+  fetchedAt: string
+  pagesCrawled: number
+  slugsDiscovered: number
+  searchHits: number
+  crawlHits: number
+  probeHits: number
+  newlyValidated: number
+}

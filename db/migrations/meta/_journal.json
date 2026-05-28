@@ -8,6 +8,20 @@
       "when": 1779984847965,
       "tag": "0000_ancient_terrax",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1779985485721,
+      "tag": "0001_familiar_wrecking_crew",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1779985743395,
+      "tag": "0002_yielding_namor",
+      "breakpoints": true
     }
   ]
 }

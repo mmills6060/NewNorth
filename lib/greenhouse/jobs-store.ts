@@ -1,6 +1,6 @@
 import { count, desc } from "drizzle-orm"
 
-import { getDb } from "@/lib/db"
+import { withDatabase } from "@/lib/db"
 import {
   greenhouseCrawlRuns,
   greenhouseJobs,
@@ -34,11 +34,11 @@ export async function saveCrawlResults(
     slugsDiscovered: number
   }
 ): Promise<{ fetchedAt: string; jobCount: number }> {
-  const db = getDb()
   const crawledAt = new Date()
   const fetchedAt = crawledAt.toISOString()
 
-  await db.transaction(async (tx) => {
+  await withDatabase(async (db) => {
+    await db.transaction(async (tx) => {
     await tx.delete(greenhouseJobs)
 
     for (let i = 0; i < jobs.length; i += INSERT_BATCH_SIZE) {
@@ -66,6 +66,7 @@ export async function saveCrawlResults(
       pagesCrawled: meta.pagesCrawled,
       slugsDiscovered: meta.slugsDiscovered,
     })
+    })
   })
 
   return { fetchedAt, jobCount: jobs.length }
@@ -74,33 +75,33 @@ export async function saveCrawlResults(
 export async function getGreenhouseSnapshot(
   maxJobs: number
 ): Promise<GreenhouseCacheSnapshot | null> {
-  const db = getDb()
+  return withDatabase(async (db) => {
+    const [latestRun] = await db
+      .select()
+      .from(greenhouseCrawlRuns)
+      .orderBy(desc(greenhouseCrawlRuns.fetchedAt))
+      .limit(1)
 
-  const [latestRun] = await db
-    .select()
-    .from(greenhouseCrawlRuns)
-    .orderBy(desc(greenhouseCrawlRuns.fetchedAt))
-    .limit(1)
+    if (!latestRun) return null
 
-  if (!latestRun) return null
+    const [jobCountRow] = await db
+      .select({ value: count() })
+      .from(greenhouseJobs)
 
-  const [jobCountRow] = await db
-    .select({ value: count() })
-    .from(greenhouseJobs)
+    const jobCount = jobCountRow?.value ?? 0
+    if (jobCount === 0) return null
 
-  const jobCount = jobCountRow?.value ?? 0
-  if (jobCount === 0) return null
+    const rows = await db
+      .select()
+      .from(greenhouseJobs)
+      .orderBy(desc(greenhouseJobs.updatedAt))
+      .limit(maxJobs)
 
-  const rows = await db
-    .select()
-    .from(greenhouseJobs)
-    .orderBy(desc(greenhouseJobs.updatedAt))
-    .limit(maxJobs)
-
-  return {
-    fetchedAt: latestRun.fetchedAt.toISOString(),
-    boardCount: latestRun.boardCount,
-    jobCount,
-    jobs: rows.map(toJobRow),
-  }
+    return {
+      fetchedAt: latestRun.fetchedAt.toISOString(),
+      boardCount: latestRun.boardCount,
+      jobCount,
+      jobs: rows.map(toJobRow),
+    }
+  })
 }
